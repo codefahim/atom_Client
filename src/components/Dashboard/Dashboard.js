@@ -20,7 +20,7 @@ const Dashboard = () => {
 
   console.log(store);
   useEffect(() => {
-    fetch('http://localhost:5000/innovations')
+    fetch('https://atomsp.herokuapp.com/innovations')
       .then((res) => res.json())
       .then((data) => setInnovation(data));
   }, [i]);
@@ -148,6 +148,7 @@ function AddInnovation() {
         alert('Product Upload Successfully');
         const formReset = document.getElementById('form');
         setLoading(false);
+
         const updateData = { ...store };
         updateData.update = !updateData.update;
         setStore(updateData);
@@ -188,24 +189,81 @@ function AddInnovation() {
 }
 
 //Update innovation
-function UpdateInnovation({ innovation }) {
+function UpdateInnovation({ innovation })
+{
+   const [store, setStore] = useContext(userContext);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [show, setShow] = useState(false);
+
   const [Exinfo, setExinfo] = useState('');
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const onSubmit = (data) => {
-    console.log(data);
+  const [Exinfoo, setExinfoo] = useState('');
+  const [info, setInfo] = useState({});
+  const handleId = (id) => {
+    localStorage.setItem('id', id);
+    let info = innovation.find((uid) => uid._id === id);
+    setInfo(info);
   };
+  const handleDelete=(id) =>
+  {
+ fetch(`http://localhost:5000/DeleteInnovation/` + id, {
+   method: 'DELETE',
+ }).then(result=>{if (result.status === 200) {
+   alert('Innovation Delete Successfully');
+     const updateData = { ...store };
+     updateData.update = !updateData.update;
+     setStore(updateData);
+ } else {
+   alert('Innovation Not Delete!Please try one more time.');
+ }})
+}
   const onTodoChange = (e) => {
     setExinfo(e);
   };
+  const onTodoChangee = (e) => {
+    setExinfoo(e);
+  };
+  const onSubmit = (data) => {
+    console.log(data);
+    const uid = info?._id;
+    const formData = new FormData();
+    formData.append('headLine', data.headLine);
+    formData.append('description', data.description);
+    fetch(`http://localhost:5000/updateInnovation/` + uid, {
+      method: 'PATCH',
+      body: formData,
+    }).then((result) => {
+      data = {};
+      if (result.status === 200) {
+        alert('Product Update Successfully');
+       
+        const updateData = { ...store };
+        updateData.update = !updateData.update;
+        setStore(updateData);
+      } else {
+        alert('Product Can not Update');
+      }
+    });
+  };
   return (
     <div className='text-center m-auto w-50'>
+      <form onSubmit={handleSubmit(onSubmit)} className='m-5'>
+        <input
+          className='input'
+          {...register('headLine')}
+          onChange={(e) => onTodoChange(e.target.value)}
+          value={Exinfo !== '' ? Exinfo : info?.userInfo?.headLine}
+        />
+        <textarea
+          className='input'
+          {...register('description')}
+          onChange={(e) => onTodoChangee(e.target.value)}
+          value={Exinfoo !== '' ? Exinfoo : info?.userInfo?.description}
+        />
+        <input type='submit' value='Update' />
+      </form>
       <table class='table'>
         <thead>
           <tr>
@@ -213,13 +271,13 @@ function UpdateInnovation({ innovation }) {
             <th scope='col'>Title</th>
             <th scope='col'>Description</th>
             <th scope='col'>Action</th>
+            <th scope='col'>Delete</th>
           </tr>
         </thead>
         {innovation?.map((data) => (
           <tbody>
             <tr>
               <td>
-                {' '}
                 <img
                   src={`data:image/png;base64,${data.imageForDB.imgB}`}
                   alt=''
@@ -231,41 +289,16 @@ function UpdateInnovation({ innovation }) {
               <td>{data.userInfo.headLine}</td>
               <td>{data.userInfo.description}</td>
               <td>
-                <Button variant='primary' onClick={handleShow}>
+                <Button className='mt-3' onClick={() => handleId(data._id)}>
                   Update
                 </Button>
               </td>
+              <td>
+                <Button className='mt-3' onClick={() => handleDelete(data._id)}>
+                  Delete
+                </Button>
+              </td>
             </tr>
-            <Modal show={show} onHide={handleClose}>
-              <Modal.Header closeButton>
-                <Modal.Title>Modal heading</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <form onSubmit={handleSubmit(onSubmit)} className='m-5'>
-                  <input
-                    className='input'
-                    {...register('HeadLine')}
-                    onChange={(e) => onTodoChange(e.target.value)}
-                    value={Exinfo !== '' ? Exinfo : data?.userInfo?.headLine}
-                  />
-                  {/* <textarea
-                className='input'
-                {...register('Description')}
-                onChange={(e) => onTodoChange(e.target.value)}
-                value={SingleProduct !== '' ? SingleProduct : bio}
-              /> */}
-                  <input type='submit' value='Update' />
-                </form>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant='secondary' onClick={handleClose}>
-                  Close
-                </Button>
-                <Button variant='primary' onClick={handleClose}>
-                  Save Changes
-                </Button>
-              </Modal.Footer>
-            </Modal>
           </tbody>
         ))}
       </table>
