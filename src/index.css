@@ -1,3 +1,15 @@
+@font-face {
+  font-family: Poppins-Regular;
+  src: url(./webFont/Poppins-Regular.woff);
+}
+@font-face {
+  font-family: Poppins-Bold;
+  src: url(./webFont/Poppins-Bold.woff);
+}
+@font-face {
+  font-family: Poppins-Medium;
+  src: url(./webFont/Poppins-Medium.woff);
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
