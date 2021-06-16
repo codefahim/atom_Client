@@ -155,7 +155,7 @@ function AddInnovation() {
     formData.append('headLine', data.headLine);
     formData.append('description', data.description);
     formData.append('image', image);
-    fetch(`http://localhost:5000/insertInnovation`, {
+    fetch(`https://atomsp.herokuapp.com/insertInnovation`, {
       method: 'POST',
       body: formData,
     }).then((result) => {
@@ -224,16 +224,18 @@ function UpdateInnovation({ innovation })
   };
   const handleDelete=(id) =>
   {
- fetch(`http://localhost:5000/DeleteInnovation/` + id, {
+ fetch(`https://atomsp.herokuapp.com/DeleteInnovation/` + id, {
    method: 'DELETE',
- }).then(result=>{if (result.status === 200) {
-   alert('Innovation Delete Successfully');
+ }).then((result) => {
+   if (result.status === 200) {
+     alert('Innovation Delete Successfully');
      const updateData = { ...store };
      updateData.update = !updateData.update;
      setStore(updateData);
- } else {
-   alert('Innovation Not Delete!Please try one more time.');
- }})
+   } else {
+     alert('Innovation Not Delete!Please try one more time.');
+   }
+ });
 }
   const onTodoChange = (e) => {
     setExinfo(e);
@@ -247,14 +249,14 @@ function UpdateInnovation({ innovation })
     const formData = new FormData();
     formData.append('headLine', data.headLine);
     formData.append('description', data.description);
-    fetch(`http://localhost:5000/updateInnovation/` + uid, {
+    fetch(`https://atomsp.herokuapp.com/updateInnovation/` + uid, {
       method: 'PATCH',
       body: formData,
     }).then((result) => {
       data = {};
       if (result.status === 200) {
         alert('Product Update Successfully');
-       
+
         const updateData = { ...store };
         updateData.update = !updateData.update;
         setStore(updateData);
