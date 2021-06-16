@@ -68,13 +68,7 @@ function Sidebar() {
       <li className='list-item-custom'>
         <Link to='/UpdateInnovation' className='a-custom'>
           <FaTrash className='mr-3' />
-          Update Innovation
-        </Link>
-      </li>
-      <li className='list-item-custom'>
-        <Link to='/Home' className='a-custom'>
-          <FaDatabase className='mr-3' />
-          Remove Innovation
+          Update/Delete Innovation
         </Link>
       </li>
     </ul>
@@ -112,11 +106,33 @@ function DashboardHome({ innovation }) {
         </>
       )}
       {innovation.length >= 1 && (
-        <>
+        <table class='table'>
+          <thead>
+            <tr>
+              <th scope='col'>Image</th>
+              <th scope='col'>Title</th>
+              <th scope='col'>Description</th>
+            </tr>
+          </thead>
           {innovation?.map((data) => (
-            <div>fahim</div>
+            <tbody>
+              <tr>
+                <td>
+                  <img
+                    src={`data:image/png;base64,${data.imageForDB.imgB}`}
+                    alt=''
+                    width='100px'
+                    height='100px'
+                    className='rounded-circle'
+                  />
+                </td>
+                <td>{data.userInfo.headLine}</td>
+                <td>{data.userInfo.description}</td>
+          
+              </tr>
+            </tbody>
           ))}
-        </>
+        </table>
       )}
     </div>
   );
