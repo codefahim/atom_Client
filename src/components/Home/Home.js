@@ -3,8 +3,6 @@ import { useContext } from 'react';
 import { Card } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { userContext } from '../../App';
-import image from '../../images/h-01.png';
-import imagex from '../../images/h-011.png';
 const Home = () => {
   let history = useHistory();
   const handleDashboard = () => {
@@ -12,12 +10,13 @@ const Home = () => {
     history.push('/Dashboard');
   };
   const [store, setStore] = useContext(userContext);
-    const [innovation, setInnovation] = useState([]);
+  const [innovation, setInnovation] = useState([]);
+  console.log(innovation);
     let i = store.update;
     useEffect(() => {
-      fetch('https://atomsp.herokuapp.com/innovations').then((data) =>
-        setInnovation(data)
-      );
+      fetch('https://atomsp.herokuapp.com/innovations')
+        .then((response) => response.json())
+        .then((data) => setInnovation(data));
     }, [i]);
   return (
     <>

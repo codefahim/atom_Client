@@ -31,9 +31,11 @@ const Dashboard = () => {
  }
   
   useEffect(() => {
-    fetch('https://atomsp.herokuapp.com/innovations').then((data) => {
-      setInnovation(data);
-    });
+    fetch('https://atomsp.herokuapp.com/innovations')
+      .then((res) => res.json())
+      .then((data) => {
+        setInnovation(data);
+      });
   }, [i]);
   console.log(innovation);
   return (
@@ -166,7 +168,7 @@ function AddInnovation() {
     formData.append('headLine', data.headLine);
     formData.append('description', data.description);
     formData.append('image', image);
-    fetch(`http://localhost:5000/insertInnovation`, {
+    fetch(`https://atomsp.herokuapp.com/insertInnovation`, {
       method: 'POST',
       body: formData,
     }).then((result) => {
