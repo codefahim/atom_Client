@@ -172,7 +172,7 @@ function AddInnovation() {
     formData.append('uid', uid);
     
 
-    fetch(`http://localhost:5000/insertInnovation`, {
+    fetch(`https://atomsp.herokuapp.com/insertInnovation`, {
       method: 'POST',
       body: formData,
     }).then((result) => {
