@@ -163,14 +163,11 @@ function AddInnovation() {
   const [store, setStore] = useContext(userContext);
   const onSubmit = (data) => {
     setLoading(true);
-    const uid = localStorage.getItem('token');
     const image = data.image[0];
     const formData = new FormData();
     formData.append('headLine', data.headLine);
     formData.append('description', data.description);
     formData.append('image', image);
-    formData.append('uid', uid);
-    
 
     fetch(`https://atomsp.herokuapp.com/insertInnovation`, {
       method: 'POST',
@@ -191,7 +188,6 @@ function AddInnovation() {
         setLoading(false);
       }
     });
-    console.log(data);
   };
   return (
     <div className='text-center m-auto w-50'>
