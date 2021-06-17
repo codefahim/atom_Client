@@ -9,14 +9,15 @@ import {
 import './App.css';
 import Dashboard from './components/Dashboard/Dashboard';
 import Home from './components/Home/Home';
+import Login from './components/Login/Login';
+import PrivateRoute from './components/Login/PrivateRoute';
 export const userContext = createContext({});
 function App() {
   const [store, setStore] = useState({
-    userName: '',
-    userImage: '',
+    userInfo: '',
     update: false,
   });
-  
+  console.log('store', store);
   return (
     <userContext.Provider value={[store, setStore]}>
       <Router>
@@ -24,7 +25,10 @@ function App() {
           <Switch>
             <Route exact path='/' component={Home} />
             <Route path='/Home' component={Home} />
-            <Route path='/Dashboard' component={Dashboard} />
+            <PrivateRoute path='/Dashboard'>
+              <Dashboard />
+            </PrivateRoute>
+            <Route path='/Login' component={Login} />
             <Route path='*' component={NoMatch} />
           </Switch>
         </section>

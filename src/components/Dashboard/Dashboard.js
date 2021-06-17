@@ -1,28 +1,42 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FaHome,
   FaPlusSquare,
   FaTrash,
-  FaDatabase,
   FaRegListAlt,
 } from 'react-icons/fa';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Spinner, Button, Modal } from 'react-bootstrap';
+import { Spinner, Button } from 'react-bootstrap';
 import { useContext } from 'react';
 import { userContext } from '../../App';
-
+import emailjs from 'emailjs-com';
 const Dashboard = () => {
   const [innovation, setInnovation] = useState([]);
   const [store, setStore] = useContext(userContext);
   let i = store.update;
+ function sendEmail(e) {
+   e.preventDefault();
 
-  console.log(store);
+   emailjs
+     .sendForm('service_cewwx7w', 'template_g9rpswi', e.target )
+     .then(
+       (result) => {
+         console.log(result.text);
+       },
+       (error) => {
+         console.log(error.text);
+       }
+     );
+ }
+  
   useEffect(() => {
     fetch('https://atomsp.herokuapp.com/innovations')
       .then((res) => res.json())
-      .then((data) => setInnovation(data));
+      .then((data) =>
+      {
+        setInnovation(data)
+      });
   }, [i]);
   console.log(innovation);
   return (
@@ -207,7 +221,7 @@ function AddInnovation() {
 //Update innovation
 function UpdateInnovation({ innovation })
 {
-   const [store, setStore] = useContext(userContext);
+  const [store, setStore] = useContext(userContext);
   const {
     register,
     handleSubmit,
@@ -217,32 +231,41 @@ function UpdateInnovation({ innovation })
   const [Exinfo, setExinfo] = useState('');
   const [Exinfoo, setExinfoo] = useState('');
   const [info, setInfo] = useState({});
+
+  // Find Specific innovation Id
   const handleId = (id) => {
     localStorage.setItem('id', id);
     let info = innovation.find((uid) => uid._id === id);
     setInfo(info);
   };
-  const handleDelete=(id) =>
-  {
- fetch(`https://atomsp.herokuapp.com/DeleteInnovation/` + id, {
-   method: 'DELETE',
- }).then((result) => {
-   if (result.status === 200) {
-     alert('Innovation Delete Successfully');
-     const updateData = { ...store };
-     updateData.update = !updateData.update;
-     setStore(updateData);
-   } else {
-     alert('Innovation Not Delete!Please try one more time.');
-   }
- });
-}
+
+  //Handle Delete Innovation
+  const handleDelete = (id) => {
+    fetch(`https://atomsp.herokuapp.com/DeleteInnovation/` + id, {
+      method: 'DELETE',
+    }).then((result) => {
+      if (result.status === 200) {
+        alert('Innovation Delete Successfully');
+        const updateData = { ...store };
+        updateData.update = !updateData.update;
+        setStore(updateData);
+      } else {
+        alert('Innovation Not Delete!Please try one more time.');
+      }
+    });
+  };
+
+  // State for hold input Data
   const onTodoChange = (e) => {
     setExinfo(e);
   };
+
+  // State for hold input Data
   const onTodoChangee = (e) => {
     setExinfoo(e);
   };
+  
+  // On Form Submit
   const onSubmit = (data) => {
     console.log(data);
     const uid = info?._id;
@@ -265,18 +288,20 @@ function UpdateInnovation({ innovation })
       }
     });
   };
+
+  // return 
   return (
     <div className='text-center m-auto w-50'>
       <form onSubmit={handleSubmit(onSubmit)} className='m-5'>
         <input
           className='input'
-          {...register('headLine')}
+          {...register('headLine', { required: true })}
           onChange={(e) => onTodoChange(e.target.value)}
           value={Exinfo !== '' ? Exinfo : info?.userInfo?.headLine}
         />
         <textarea
           className='input'
-          {...register('description')}
+          {...register('description', { required: true })}
           onChange={(e) => onTodoChangee(e.target.value)}
           value={Exinfoo !== '' ? Exinfoo : info?.userInfo?.description}
         />
