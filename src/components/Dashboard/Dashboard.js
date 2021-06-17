@@ -168,9 +168,10 @@ function AddInnovation() {
     formData.append('headLine', data.headLine);
     formData.append('description', data.description);
     formData.append('image', image);
-    fetch(`https://atomsp.herokuapp.com/insertInnovation`, {
+    const uid = localStorage.getItem('token');
+
+    fetch(`https://atomsp.herokuapp.com/insertInnovation/` + uid, {
       method: 'POST',
-      headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
       body: formData,
     }).then((result) => {
       setRecall(!Recall);
@@ -243,7 +244,6 @@ function UpdateInnovation({ innovation })
   const handleDelete = (id) => {
     fetch(`https://atomsp.herokuapp.com/DeleteInnovation/` + id, {
       method: 'DELETE',
-      headers: { authorization: `Bearer ${localStorage.getItem('token')}` },
     }).then((result) => {
       if (result.status === 200) {
         alert('Innovation Delete Successfully');
