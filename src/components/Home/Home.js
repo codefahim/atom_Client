@@ -15,9 +15,9 @@ const Home = () => {
     const [innovation, setInnovation] = useState([]);
     let i = store.update;
     useEffect(() => {
-      fetch('https://atomsp.herokuapp.com/innovations')
-        .then((res) => res.json())
-        .then((data) => setInnovation(data));
+      fetch('https://atomsp.herokuapp.com/innovations').then((data) =>
+        setInnovation(data)
+      );
     }, [i]);
   return (
     <>
