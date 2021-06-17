@@ -163,14 +163,16 @@ function AddInnovation() {
   const [store, setStore] = useContext(userContext);
   const onSubmit = (data) => {
     setLoading(true);
+    const uid = localStorage.getItem('token');
     const image = data.image[0];
     const formData = new FormData();
     formData.append('headLine', data.headLine);
     formData.append('description', data.description);
     formData.append('image', image);
-    const uid = localStorage.getItem('token');
+    formData.append('uid', uid);
+    
 
-    fetch(`https://atomsp.herokuapp.com/insertInnovation/` + uid, {
+    fetch(`http://localhost:5000/insertInnovation`, {
       method: 'POST',
       body: formData,
     }).then((result) => {
